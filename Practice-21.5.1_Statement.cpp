@@ -140,9 +140,12 @@ void list(paymentData* person) {
 
   std::string currency;
 
-  while (statement >> person->name >> person->surname >> person->date >> person->moneyStr >> currency) {
-    std::cout << person->name << outputAlignment(person->name) << "\t" << person->surname << outputAlignment(person->surname) << "\t"
-              << person->date << "\t" << person->moneyStr << " " <<  currency <<"\n";
+  while (statement >> person->name >> person->surname >> person->date >>
+         person->moneyStr >> currency) {
+    std::cout << person->name << outputAlignment(person->name) << "\t"
+              << person->surname << outputAlignment(person->surname) << "\t"
+              << person->date << "\t" << person->moneyStr << " " << currency
+              << "\n";
   }
   statement.close();
 }
@@ -153,13 +156,16 @@ int main() {
 
   do {
     do {
-    std::cout << "Input \"add\" or \"list\": ";
-    std::cin >> answer;
-    answer = lower_case(answer);
-    if (answer != "add" && answer != "list") std::cout << "Error input. Please try again\n";
+      std::cout << "Input \"add\" or \"list\": ";
+      std::cin >> answer;
+      answer = lower_case(answer);
+      if (answer != "add" && answer != "list")
+        std::cout << "Error input. Please try again\n";
     } while (answer != "add" && answer != "list");
 
     if (answer == "add") add(person);
-    if (answer == "list") list(&person); 
+    if (answer == "list")
+      list(&person);  // Для себя сделал 2 варианта
+                      // с ссылкой и указателем
   } while (repeat());
 }
