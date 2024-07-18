@@ -35,10 +35,18 @@ bool answer(std::string ans) {
 }
 
 math_vector input_coord(math_vector& vec, std::string number_vector = "") {
-  std::cout << "Input coordinate x vector" << number_vector << ": ";
-  std::cin >> vec.x;
-  std::cout << "Input coordinate y vector" << number_vector << ": ";
-  std::cin >> vec.y;
+  do {
+    std::cout << "Input coordinate x vector" << number_vector << ": ";
+    std::cin >> vec.x;
+    std::cout << "Input coordinate y vector" << number_vector << ": ";
+    std::cin >> vec.y;
+
+    if (vec.x == 0 && vec.y == 0) {
+      std::cout << "Incorrect coordinates\n";
+      std::cout << "Vector cannot be equal to 0. Please, try again.\n";
+    }
+  } while (vec.x == 0 && vec.y == 0);
+
   return vec;
 }
 
@@ -48,7 +56,7 @@ double length() {  // для вектора с началом координат
   return hypot(vec.x, vec.y);
 }
 
-double add() {  // первый вектор с началом координат (0,0)
+double add() {  // для векторов с началом координат (0,0)
   math_vector vec_1;
   vec_1 = input_coord(vec_1, "1");
 
@@ -62,7 +70,7 @@ double add() {  // первый вектор с началом координа�
   return hypot(vec_3.x, vec_3.y);
 }
 
-double subtract() {  // первый вектор с началом координат (0,0)
+double subtract() {  // для векторов с началом координат (0,0)
   math_vector vec_1;
   vec_1 = input_coord(vec_1, "1");
 
@@ -93,12 +101,13 @@ math_vector scale() {  // для вектора с началом координ
   math_vector result;
   result.x = vec.x * scalar;
   result.y = vec.y * scalar;
-  
+
   return result;
 }
 
 math_vector normalize() {  // для вектора с началом координат (0,0)
   math_vector vec;
+
   vec = input_coord(vec);
 
   math_vector result;
@@ -132,12 +141,14 @@ int main() {
 
   if (operation == "add") {
     double result = add();
-    std::cout << "Addition result you vectors = " << result << "\n";
+    std::cout << "Length of the resulting vector upon addition = " << result
+              << "\n";
   }
 
   if (operation == "subtract") {
     double result = subtract();
-    std::cout << "Subtraction result you vectors = " << result << "\n";
+    std::cout << "Length of the resulting vector upon subtraction = " << result
+              << "\n";
   }
 
   if (operation == "scale") {
@@ -150,6 +161,7 @@ int main() {
 
   if (operation == "normalize") {
     math_vector result = normalize();
+
     std::cout << "As a result of vector normalization, the coordinates were "
                  "obtained:\n "
               << "x = " << result.x << ", y = " << result.y
