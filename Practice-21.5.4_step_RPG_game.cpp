@@ -167,6 +167,8 @@ std::string answer_player() {
   do {
     std::cout << "Enter direction of travel(L, R, U or D):\n";
     std::cout << "L - Left, R - right, U - Up, D - Down\n";
+    std::cout << "To save, enter \"SAVE\"\n";
+    std::cout << "To load, enter \"LOAD\"\n";
 
     std::cin >> answer;
     answer = upper_case(answer);
@@ -220,7 +222,7 @@ void enemy_attack(character& player, character& enemy) {
     player.armor = 0;
   }
 
-  if (enemy.heals <= 0) {
+  if (player.heals <= 0) {
     player.alive = false;
     player.side = "Dead player";
     player.place.x = -2;
@@ -229,12 +231,19 @@ void enemy_attack(character& player, character& enemy) {
   }
 }
 
+void save_in_file(character& player, std::vector<character>& enemy) {
+  
+}
+
 void move_player(character& player, std::vector<character>& enemy) {
   int x = player.place.x;
   int y = player.place.y;
 
   std::string answer = answer_player();
-
+  if (answer == "SAVE")
+    ;
+  if (answer == "LOAD")
+    ;
   if (answer == "L") player.place.x--;
   if (answer == "R") player.place.x++;
   if (answer == "U") player.place.y--;
@@ -308,6 +317,15 @@ void move_enemy(std::vector<character>& enemy, character& player) {
   }
 }
 
+bool enemy_alive(std::vector<character> enemy) {
+  int size_enemy = enemy.size();
+
+  for (int i = 0; i < size_enemy; i++) {
+    if (enemy[i].alive == true) return true;
+  }
+  return false;
+}
+
 int main() {
   std::cout << "Play RPG game\n";
   world map;
@@ -320,5 +338,10 @@ int main() {
     print_map(map, enemy, player);
     move_player(player, enemy);
     move_enemy(enemy, player);
-  } while (player.alive);
+  } while (player.alive && enemy_alive(enemy));
+
+  if (player.alive)
+    std::cout << "You WIN!\n";
+  else
+    std::cout << "You lose...\n";
 }
