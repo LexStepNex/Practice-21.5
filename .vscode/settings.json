@@ -114,5 +114,8 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "cstdarg": "cpp"
-  }
+  },
+  "cSpell.words": [
+    "LRUD"
+  ]
 }

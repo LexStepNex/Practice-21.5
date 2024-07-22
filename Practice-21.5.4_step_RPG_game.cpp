@@ -1,9 +1,12 @@
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <random>
+#include <regex>
 #include <string>
 #include <vector>
+#include <sstream>
 
 struct world {
   char area[20][20];
@@ -152,6 +155,7 @@ void new_game_player(std::vector<character>& enemy, character& player) {
   } while (!correct_place_player(player, enemy));
 
   player.alive = true;
+  std::cout << "New game start: \n";
 }
 
 std::string upper_case(std::string str) {
@@ -163,6 +167,8 @@ std::string upper_case(std::string str) {
 }
 
 std::string answer_player() {
+  std::cmatch result;
+  std::regex correct_ans("([LRUD])|(SAVE)|(LOAD)");
   std::string answer;
   do {
     std::cout << "Enter direction of travel(L, R, U or D):\n";
@@ -172,7 +178,7 @@ std::string answer_player() {
 
     std::cin >> answer;
     answer = upper_case(answer);
-  } while (answer != "L" && answer != "R" && answer != "U" && answer != "D");
+  } while (!regex_match(answer.c_str(), correct_ans));
 
   return answer;
 }
@@ -232,18 +238,67 @@ void enemy_attack(character& player, character& enemy) {
 }
 
 void save_in_file(character& player, std::vector<character>& enemy) {
-  
+  std::ofstream file("save.bin", std::ios::binary);
+  file << player.name << ' ';
+  file << player.side << ' ';
+  file << player.place.x << ' ';
+  file << player.place.y << ' ';
+  file << player.heals << ' ';
+  file << player.armor << ' ';
+  file << player.damage << ' ';
+  file << player.alive << " \n";
+
+  int size_enemy = enemy.size();
+  for (int i = 0; i < size_enemy; i++) {
+    file << enemy[i].name << ' ';
+    file << enemy[i].side << ' ';
+    file << enemy[i].place.x << ' ';
+    file << enemy[i].place.y << ' ';
+    file << enemy[i].heals << ' ';
+    file << enemy[i].armor << ' ';
+    file << enemy[i].damage << ' ';
+    file << enemy[i].alive << " \n";
+  }
+  std::cout << "Save successful\n";
+
+  file.close();
 }
 
-void move_player(character& player, std::vector<character>& enemy) {
+void load_in_file(character& player, std::vector<character>& enemy) {
+  std::ifstream file("save.bin", std::ios::binary);
+  if (!file.is_open()) {
+    std::cout << "File \"save.bin\" not found\n";
+    file.close();
+    return;
+  }
+  
+  std::string str;
+  std::stringstream buffer;
+  std::getline(file, str);
+  buffer << str;
+  buffer >> player.name >> player.side >> player.place.x >> player.place.y 
+         >> player.heals >> player.armor >> player.damage >> player.alive;
+  
+  int size_enemy = enemy.size(); 
+  for (int i = 0; i < size_enemy; i++) {
+    std::getline(file, str);
+    buffer << str;
+    buffer >> enemy[i].name;
+    buffer >> str;
+    enemy[i].name += str;
+    
+    buffer >> enemy[i].side >> enemy[i].place.x >> enemy[i].place.y >> enemy[i].heals 
+           >> enemy[i].armor >> enemy[i].damage >> enemy[i].alive;
+  }
+
+  file.close();
+}
+
+void move_player(character& player, std::vector<character>& enemy,
+                 std::string answer) {
   int x = player.place.x;
   int y = player.place.y;
 
-  std::string answer = answer_player();
-  if (answer == "SAVE")
-    ;
-  if (answer == "LOAD")
-    ;
   if (answer == "L") player.place.x--;
   if (answer == "R") player.place.x++;
   if (answer == "U") player.place.y--;
@@ -336,7 +391,13 @@ int main() {
 
   do {
     print_map(map, enemy, player);
-    move_player(player, enemy);
+
+    std::string ans;
+    ans = answer_player();
+    if (ans == "SAVE") save_in_file(player, enemy);
+    if (ans == "LOAD") load_in_file(player, enemy);
+
+    move_player(player, enemy, ans);
     move_enemy(enemy, player);
   } while (player.alive && enemy_alive(enemy));
 

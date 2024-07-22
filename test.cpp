@@ -1,23 +1,12 @@
 #include <iostream>
 #include <random>
-#include <windows.h>
-#include <shellapi.h>
-
-using namespace std;
+#include <sstream>
 
 int main() {
-  random_device rd;
-  mt19937 generate(rd());
-  uniform_int_distribution<> dist(1, 10);
-  uniform_int_distribution<> dist2(50, 150);
+  std::stringstream buffer("Jon player 23 dsd 43");
+  std::string word, word2, word3;
+  int num, num2;
+  buffer >> word >> word2 >> num >> word3 >> num2;
 
-  for (int i = 0; i < 5; ++i) {
-    cout << dist(generate) << " ";
-  }
-  cout << endl;
-
-  for (int i = 0; i < 5; ++i) {
-    cout << dist2(generate) << " ";
-  }
-  ShellExecute(0, 0, "http://www.google.com", 0, 0 , SW_SHOW );
+  std::cout << word << ' ' << word2 << ' ' << num << ' ' << word << ' ' << num2;
 }
