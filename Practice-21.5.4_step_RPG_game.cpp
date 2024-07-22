@@ -325,7 +325,7 @@ void move_player(character& player, std::vector<character>& enemy,
 void move_enemy(std::vector<character>& enemy, character& player) {
   std::random_device rand;
   std::mt19937 gen(rand());
-  std::uniform_int_distribution<> for_ans(1, 5);
+  std::uniform_int_distribution<> for_ans(1, 4);
 
   int enemy_size = enemy.size();
   for (int i = 0; i < enemy_size; i++) {
@@ -346,11 +346,6 @@ void move_enemy(std::vector<character>& enemy, character& player) {
     if (for_ans(gen) == 4) {
       enemy[i].place.y++;
     }
-    if (for_ans(gen) == 5) {
-      // dont move
-      return;
-    }
-
     if (behind_map(enemy[i])) {
       enemy[i].place.x = x;
       enemy[i].place.y = y;
