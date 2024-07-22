@@ -4,9 +4,9 @@
 #include <iostream>
 #include <random>
 #include <regex>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 struct world {
   char area[20][20];
@@ -38,10 +38,12 @@ void print_map(world& map, std::vector<character> enemy, character player) {
   }
 
   for (int k = 0; k < enemy.size(); k++) {
-    if (enemy[k].alive == true)
+    if (enemy[k].alive == true) {
       map.area[enemy[k].place.y][enemy[k].place.x] = 'E';
+    }
   }
-
+  
+  if (player.alive)
   map.area[player.place.y][player.place.x] = 'P';
 
   for (int i = 0; i < 20; i++) {
@@ -213,7 +215,7 @@ void player_attack(character& player, character& enemy) {
 
   if (enemy.heals <= 0) {
     enemy.alive = false;
-    enemy.side = "Dead enemy";
+    enemy.side = "DeadEnemy";
     enemy.place.x = -1;
     enemy.place.y = -1;
     std::cout << "Enemy killed\n";
@@ -230,7 +232,7 @@ void enemy_attack(character& player, character& enemy) {
 
   if (player.heals <= 0) {
     player.alive = false;
-    player.side = "Dead player";
+    player.side = "DeadPlayer";
     player.place.x = -2;
     player.place.y = -2;
     std::cout << "YOU DIED\n";
@@ -271,24 +273,24 @@ void load_in_file(character& player, std::vector<character>& enemy) {
     file.close();
     return;
   }
-  
+
   std::string str;
   std::stringstream buffer;
   std::getline(file, str);
   buffer << str;
-  buffer >> player.name >> player.side >> player.place.x >> player.place.y 
-         >> player.heals >> player.armor >> player.damage >> player.alive;
-  
-  int size_enemy = enemy.size(); 
+  buffer >> player.name >> player.side >> player.place.x >> player.place.y >>
+      player.heals >> player.armor >> player.damage >> player.alive;
+
+  int size_enemy = enemy.size();
   for (int i = 0; i < size_enemy; i++) {
     std::getline(file, str);
     buffer << str;
     buffer >> enemy[i].name;
     buffer >> str;
-    enemy[i].name += str;
-    
-    buffer >> enemy[i].side >> enemy[i].place.x >> enemy[i].place.y >> enemy[i].heals 
-           >> enemy[i].armor >> enemy[i].damage >> enemy[i].alive;
+    enemy[i].name += ' ' + str;
+
+    buffer >> enemy[i].side >> enemy[i].place.x >> enemy[i].place.y >>
+        enemy[i].heals >> enemy[i].armor >> enemy[i].damage >> enemy[i].alive;
   }
 
   file.close();
@@ -389,8 +391,15 @@ int main() {
 
     std::string ans;
     ans = answer_player();
-    if (ans == "SAVE") save_in_file(player, enemy);
-    if (ans == "LOAD") load_in_file(player, enemy);
+    if (ans == "SAVE") {
+      save_in_file(player, enemy);
+      continue;
+    }
+
+    if (ans == "LOAD") {
+      load_in_file(player, enemy);
+      continue;
+    }
 
     move_player(player, enemy, ans);
     move_enemy(enemy, player);

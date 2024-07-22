@@ -1,6 +1,6 @@
-Jon player 8 15 58 0 20 1 
-Enemy #1 mob 5 19 141 22 15 1 
-Enemy #2 Dead enemy -1 -1 -4 0 28 0 
-Enemy #3 Dead enemy -1 -1 -5 0 15 0 
-Enemy #4 mob 3 16 133 11 15 1 
-Enemy #5 mob 3 3 111 7 22 1 
+Jon player 16 19 100 14 30 1 
+Enemy #1 DeadEnemy -1 -1 -29 0 28 0 
+Enemy #2 mob 17 19 45 0 29 1 
+Enemy #3 DeadEnemy -1 -1 -22 0 27 0 
+Enemy #4 mob 9 1 141 11 23 1 
+Enemy #5 mob 7 14 82 28 23 1 
